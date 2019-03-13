@@ -23,21 +23,10 @@ class App extends React.Component {
 
   handlePetsClick = () => {
     let url
-    switch (this.state.filters.type) {
-      case 'all':
-        url = '/api/pets'
-        break;
-      case 'cat':
-        url = '/api/pets?type=cat'
-        break;
-      case 'dog':
-        url = '/api/pets?type=dog'
-        break;
-      case 'micropig':
-        url = '/api/pets?type=micropig'
-        break;
-      default:
-        url = '/api/pets'
+    if (this.state.filters.type === 'all') {
+      url = '/api/pets'
+    } else {
+      url = '/api/pets?type=' + this.state.filters.type
     }
     this.petsFetch(url)
   }
