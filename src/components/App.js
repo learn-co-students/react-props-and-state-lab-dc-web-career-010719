@@ -15,6 +15,61 @@ class App extends React.Component {
     }
   }
 
+  handleChangeType = (filterType) => {
+    let filters = {...this.state.filters}
+    filters.type = filterType
+    this.setState({filters})
+  }
+
+  handlePetsClick = () => {
+    let url
+    switch (this.state.filters.type) {
+      case 'all':
+        url = '/api/pets'
+        break;
+      case 'cat':
+        url = '/api/pets?type=cat'
+        break;
+      case 'dog':
+        url = '/api/pets?type=dog'
+        break;
+      case 'micropig':
+        url = '/api/pets?type=micropig'
+        break;
+      default:
+        url = '/api/pets'
+    }
+    this.petsFetch(url)
+  }
+
+  petsFetch(url) {
+    fetch(url)
+    .then(res => res.json())
+    .then(pets => {
+      this.setState({pets: []})
+      pets.forEach((pet) => {
+        let newPets = this.state.pets.concat(pet)
+        this.setState({
+          pets: newPets
+        })
+      })})
+    }
+
+  handleAdoption = (id) => {
+    let pets = [...this.state.pets]
+    let index = pets.findIndex((pet) => {return pet.id === id})
+    let pet = {...pets[index]}
+    pet.isAdopted = !pet.isAdopted
+    pets[index] = pet
+    this.setState({pets: pets})
+  }
+
+  // allows immediate load of all pets
+  // componentDidMount() {
+  //   this.petsFetch('/api/pets')
+  // }
+
+
   render() {
     return (
       <div className="ui container">
@@ -24,10 +79,10 @@ class App extends React.Component {
         <div className="ui container">
           <div className="ui grid">
             <div className="four wide column">
-              <Filters />
+              <Filters onChangeType={this.handleChangeType} onFindPetsClick={this.handlePetsClick}/>
             </div>
             <div className="twelve wide column">
-              <PetBrowser />
+              <PetBrowser pets={this.state.pets} onAdoptPet={this.handleAdoption}/>
             </div>
           </div>
         </div>
