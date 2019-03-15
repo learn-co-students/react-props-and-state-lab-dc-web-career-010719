@@ -39,6 +39,17 @@ class App extends React.Component {
     this.fetchPets()
   }
 
+  onAdoptPet = (id) => {
+    // console.log(id)
+    const adoptedPet = this.state.pets.find(pet => pet.id === id)
+    adoptedPet.isAdopted = true
+    const removeOldPet = this.state.pets.filter(pet => pet.id !== id)
+    this.setState({
+      pets: [...removeOldPet, adoptedPet]
+    })
+    // console.log(this.state.pets.find(pet => pet.id === id))
+  }
+
   render() {
     return (
       <div className="ui container">
@@ -51,7 +62,7 @@ class App extends React.Component {
               <Filters onChangeType={this.onChangeType} onFindPetsClick={this.onFindPetsClick}/>
             </div>
             <div className="twelve wide column">
-              <PetBrowser />
+              <PetBrowser pets={this.state.pets} onAdoptPet={this.onAdoptPet} />
             </div>
           </div>
         </div>
